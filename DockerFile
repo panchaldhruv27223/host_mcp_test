@@ -1,0 +1,20 @@
+# Use a lightweight Python version
+FROM python:3.12
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Set the working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY pyproject.toml uv.lock ./
+
+RUN uv sync --frozen --no-dev
+
+# Copy the server code
+COPY server.py .
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Command to run the server
+CMD ["python", "server.py"]
